@@ -76,9 +76,9 @@ func main() {
 		os.Exit(1)
 	}
 
-    fmt.Println("Scanning the library")
+	fmt.Println("Scanning the library")
 	fs = files(filesRoot)
-	fmt.Printf("Discovered %d files\n", len(fs)
+	fmt.Printf("Discovered %d files\n", len(fs))
 	sort.Slice(fs, func(i, j int) bool {
 		return fs[i].modified.Before(fs[j].modified)
 	})
