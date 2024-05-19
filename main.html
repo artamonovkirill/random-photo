@@ -23,8 +23,11 @@
 <body>
 <script>
     document.addEventListener("keypress", function(event) {
-        if (event.keyCode == 114) {
+        // R in English and Russian layouts
+        if (event.keyCode == 114 || event.keyCode == 1082) {
             window.location.href = '/'
+        } else {
+            console.log("Got: " + event.keyCode)
         }
     });
     document.addEventListener("keydown", function(event) {
