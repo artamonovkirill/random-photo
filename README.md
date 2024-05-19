@@ -1,6 +1,8 @@
 # Random Photo
 
-Load a random photo (or video) from local photo library.
+Load a random photo (or video) from local photo library:
+
+<img src="example.png" alt="example" width="400"/>
 
 ## Prerequisites
 
