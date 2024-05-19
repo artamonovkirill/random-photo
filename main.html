@@ -37,7 +37,7 @@
     });
 </script>
 <div style="text-align: center;">
-    <div>{{.Origin}}</div>
+    <div><b>{{.Created}}</b>: {{.Origin}}</div>
     {{if or (eq .Ext ".MOV") (eq .Ext ".MP4")}}
     <video class="media" controls="controls" autoplay>
         <source src="{{.Path}}"/>
