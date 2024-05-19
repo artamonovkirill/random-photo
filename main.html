@@ -25,7 +25,7 @@
     document.addEventListener("keypress", function(event) {
         // R in English and Russian layouts
         if (event.keyCode == 114 || event.keyCode == 1082) {
-            window.location.href = '/'
+            window.location.href = '/?session={{.Session}}'
         }
     });
     document.addEventListener("keydown", function(event) {
