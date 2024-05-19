@@ -5,7 +5,7 @@ Load a random photo (or video) from local photo library.
 ## Prerequisites
 
 - [go](https://go.dev/doc/install)
-- `libheif` ([brew](https://formulae.brew.sh/formula/libheif), [Debian](https://packages.debian.org/sid/libheif1))
+- see [go-libheif prerequisites](https://github.com/MaestroError/go-libheif?tab=readme-ov-file#prerequisites)
 
 ## Running
 
