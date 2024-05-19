@@ -86,11 +86,11 @@ func main() {
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/photos/", photoHandler)
 
-	photos := http.FileServer(http.Dir(filesRoot))
-	http.Handle("/static/", http.StripPrefix("/static/", photos))
-	assets := http.FileServer(http.Dir("."))
-	http.Handle("/tmp/", assets)
-	http.Handle("/favicon.ico", assets)
+	files := http.FileServer(http.Dir(filesRoot))
+	http.Handle("/static/", http.StripPrefix("/static/", files))
+
+	tmp := http.FileServer(http.Dir("./tmp"))
+	http.Handle("/tmp/", http.StripPrefix("/tmp/", tmp))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
