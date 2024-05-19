@@ -11,7 +11,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/MaestroError/go-libheif"
@@ -19,13 +18,13 @@ import (
 )
 
 type file struct {
-	path    string
-	created time.Time
+	path     string
+	modified time.Time
 }
 
 type pointer struct {
-	Current, Previous, Next             int
-	Path, Origin, Ext, Session, Created string
+	Current, Previous, Next              int
+	Path, Origin, Ext, Session, Modified string
 }
 
 const DATE = "02 January 2006"
@@ -80,7 +79,7 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 		Origin:   origin,
 		Ext:      ext,
 		Session:  session,
-		Created:  file.created.Format(DATE),
+		Modified: file.modified.Format(DATE),
 	})
 }
 
@@ -95,7 +94,7 @@ func main() {
 	fs = files(filesRoot)
 	fmt.Printf("Discovered %d files\n", len(fs))
 	sort.Slice(fs, func(i, j int) bool {
-		return fs[i].created.Before(fs[j].created)
+		return fs[i].modified.Before(fs[j].modified)
 	})
 
 	os.Mkdir("./tmp", os.ModePerm)
@@ -127,18 +126,9 @@ func files(path string) []file {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			var created time.Time
-			switch info.Sys().(type) {
-			case *syscall.Stat_t:
-				sys := info.Sys().(*syscall.Stat_t)
-				created = time.Unix(sys.Birthtimespec.Sec, sys.Birthtimespec.Nsec)
-			default:
-				fmt.Printf("got: %T\n", info.Sys())
-				created = info.ModTime()
-			}
 			result = append(result, file{
-				path:    entryPath,
-				created: created,
+				path:     entryPath,
+				modified: info.ModTime(),
 			})
 		} else {
 			result = append(result, files(entryPath)...)
