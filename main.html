@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <title>Random Photo</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <style>
+        .media {
+            height: 90%;
+            width: 90%;
+            object-fit: contain
+        }
+
+        .button {
+            background-color: #04AA6D; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<script>
+    document.addEventListener("keypress", function(event) {
+        if (event.keyCode == 114) {
+            window.location.href = '/'
+        }
+    });
+    document.addEventListener("keydown", function(event) {
+        if (event.keyCode == 37) {
+            window.location.href = '/photos/{{.Previous}}'
+        } else if (event.keyCode == 39) {
+            window.location.href = '/photos/{{.Next}}'
+        }
+    });
+</script>
+<div style="text-align: center;">
+    <div>{{.Origin}}</div>
+    {{if or (eq .Ext ".MOV") (eq .Ext ".MP4")}}
+    <video class="media" controls="controls" autoplay>
+        <source src="{{.Path}}"/>
+    </video>
+    {{else}}
+    <img class="media" src="{{.Path}}" alt="{{.Origin}}"/>
+    {{end}}
+    <div>
+        <a href="/photos/{{.Previous}}" class="button">&#8592;</a>
+        <a href="/" class="button">Refresh (R)</a>
+        <a href="/photos/{{.Next}}" class="button">&#8594;</a>
+    </div>
+</div>
+</body>
+</html>
