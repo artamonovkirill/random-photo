@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/MaestroError/go-libheif"
+	"github.com/google/uuid"
 )
 
 type file struct {
@@ -22,8 +23,8 @@ type file struct {
 }
 
 type pointer struct {
-	Current, Previous, Next int
-	Path, Origin, Ext       string
+	Current, Previous, Next    int
+	Path, Origin, Ext, Session string
 }
 
 var filesRoot string
@@ -31,7 +32,11 @@ var fs []file
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	current := rand.Intn(len(fs))
-	http.Redirect(w, r, fmt.Sprintf("/photos/%d", current), http.StatusSeeOther)
+	session := r.URL.Query().Get("session")
+	if session == "" {
+		session = uuid.New().String()
+	}
+	http.Redirect(w, r, fmt.Sprintf("/photos/%d?session=%s", current, session), http.StatusSeeOther)
 }
 
 func photoHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,18 +45,24 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
+	session := r.URL.Query().Get("session")
+	if session == "" {
+		session = uuid.New().String()
+	}
+
 	path := fs[id].path
 	origin := strings.ReplaceAll(fs[id].path, filesRoot, "")
 	ext := strings.ToUpper(filepath.Ext(path))
 
 	switch ext {
 	case ".HEIC":
-		err := libheif.HeifToJpeg(path, "./tmp/current.jpeg", 100)
+		output := "/tmp/" + session + ".jpeg"
+		err := libheif.HeifToJpeg(path, "."+output, 100)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		path = "/tmp/current.jpeg"
+		path = output
 	default:
 		path = "/static" + origin
 	}
@@ -64,6 +75,7 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 		Path:     path,
 		Origin:   origin,
 		Ext:      ext,
+		Session:  session,
 	})
 }
 

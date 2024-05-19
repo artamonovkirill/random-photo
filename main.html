@@ -26,15 +26,13 @@
         // R in English and Russian layouts
         if (event.keyCode == 114 || event.keyCode == 1082) {
             window.location.href = '/'
-        } else {
-            console.log("Got: " + event.keyCode)
         }
     });
     document.addEventListener("keydown", function(event) {
         if (event.keyCode == 37) {
-            window.location.href = '/photos/{{.Previous}}'
+            window.location.href = '/photos/{{.Previous}}?session={{.Session}}'
         } else if (event.keyCode == 39) {
-            window.location.href = '/photos/{{.Next}}'
+            window.location.href = '/photos/{{.Next}}?session={{.Session}}'
         }
     });
 </script>
@@ -48,9 +46,9 @@
     <img class="media" src="{{.Path}}" alt="{{.Origin}}"/>
     {{end}}
     <div>
-        <a href="/photos/{{.Previous}}" class="button">&#8592;</a>
-        <a href="/" class="button">Refresh (R)</a>
-        <a href="/photos/{{.Next}}" class="button">&#8594;</a>
+        <a href="/photos/{{.Previous}}?session={{.Session}}" class="button">&#8592;</a>
+        <a href="/?session={{.Session}}" class="button">Refresh (R)</a>
+        <a href="/photos/{{.Next}}?session={{.Session}}" class="button">&#8594;</a>
     </div>
 </div>
 </body>
