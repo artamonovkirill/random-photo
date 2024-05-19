@@ -42,7 +42,7 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	path := fs[id].path
 	origin := strings.ReplaceAll(fs[id].path, filesRoot, "")
-	ext := filepath.Ext(path)
+	ext := strings.ToUpper(filepath.Ext(path))
 
 	switch ext {
 	case ".HEIC":
