@@ -26,8 +26,6 @@ type pointer struct {
 	Path, Origin, Ext       string
 }
 
-const port = ":8080"
-
 var filesRoot string
 var fs []file
 
@@ -55,7 +53,7 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		path = "/tmp/current.jpeg"
 	default:
-		path = fmt.Sprintf("http://localhost%s/static%s", port, origin)
+		path = "/static" + origin
 	}
 
 	t, _ := template.ParseFiles("main.html")
@@ -94,7 +92,7 @@ func main() {
 	http.Handle("/tmp/", assets)
 	http.Handle("/favicon.ico", assets)
 
-	log.Fatal(http.ListenAndServe(port, nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func files(path string) []file {
