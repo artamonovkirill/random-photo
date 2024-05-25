@@ -15,49 +15,44 @@ import (
 
 	"github.com/MaestroError/go-libheif"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 )
 
 type file struct {
 	path     string
 	modified time.Time
+	ext      string
 }
 
 type pointer struct {
-	Current, Previous, Next              int
-	Path, Origin, Ext, Session, Modified string
+	Previous, Next, Refresh, Path, Origin, Ext, Modified string
 }
 
 const DATE = "02 January 2006"
 
 var filesRoot string
 var fs []file
-
-func rootHandler(w http.ResponseWriter, r *http.Request) {
-	current := rand.Intn(len(fs))
-	session := r.URL.Query().Get("session")
-	if session == "" {
-		session = uuid.New().String()
-	}
-	http.Redirect(w, r, fmt.Sprintf("/photos/%d?session=%s", current, session), http.StatusSeeOther)
-}
+var videos []file
 
 func photoHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/photos/"))
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
 	session := r.URL.Query().Get("session")
 	if session == "" {
 		session = uuid.New().String()
+		http.Redirect(w, r, fmt.Sprintf("/photos/%d?session=%s", id, session), http.StatusSeeOther)
+		return
 	}
 
 	file := fs[id]
 	path := file.path
 	origin := strings.ReplaceAll(path, filesRoot, "")
-	ext := strings.ToUpper(filepath.Ext(path))
 
-	switch ext {
+	switch file.ext {
 	case ".HEIC":
 		output := "/tmp/" + session + ".jpeg"
 		err := libheif.HeifToJpeg(path, "."+output, 100)
@@ -70,15 +65,38 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 		path = "/static" + origin
 	}
 
-	t, _ := template.ParseFiles("main.html")
+	t, _ := template.ParseFiles("assets/photos.html")
 	t.Execute(w, pointer{
-		Current:  id,
-		Previous: id - 1,
-		Next:     id + 1,
+		Previous: fmt.Sprintf("/photos/%d?session=%s", id-1, session),
+		Next:     fmt.Sprintf("/photos/%d?session=%s", id+1, session),
+		Refresh:  fmt.Sprintf("/photos?session=%s", session),
 		Path:     path,
 		Origin:   origin,
-		Ext:      ext,
-		Session:  session,
+		Ext:      file.ext,
+		Modified: file.modified.Format(DATE),
+	})
+}
+
+func videoHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	file := videos[id]
+	path := file.path
+	origin := strings.ReplaceAll(path, filesRoot, "")
+	path = "/static" + origin
+
+	t, _ := template.ParseFiles("assets/videos.html")
+	t.Execute(w, pointer{
+		Previous: fmt.Sprintf("/videos/%d", id-1),
+		Next:     fmt.Sprintf("/videos/%d", id+1),
+		Refresh:  "/videos",
+		Path:     path,
+		Origin:   origin,
+		Ext:      file.ext,
 		Modified: file.modified.Format(DATE),
 	})
 }
@@ -92,23 +110,49 @@ func main() {
 
 	fmt.Println("Scanning the library")
 	fs = files(filesRoot)
-	fmt.Printf("Discovered %d files\n", len(fs))
+
+	for _, f := range fs {
+		if f.ext == ".MP4" || f.ext == ".MOV" {
+			videos = append(videos, f)
+		}
+	}
+
+	fmt.Printf("Discovered %d files, %d videos\n", len(fs), len(videos))
 	sort.Slice(fs, func(i, j int) bool {
 		return fs[i].modified.Before(fs[j].modified)
+	})
+	sort.Slice(videos, func(i, j int) bool {
+		return videos[i].modified.Before(videos[j].modified)
 	})
 
 	os.Mkdir("./tmp", os.ModePerm)
 
-	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/photos/", photoHandler)
+	r := mux.NewRouter()
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./assets/main.html")
+	})
+	r.HandleFunc("/photos", func(w http.ResponseWriter, r *http.Request) {
+		url := fmt.Sprintf("/photos/%d", rand.Intn(len(fs)))
+		session := r.URL.Query().Get("session")
+		if session != "" {
+			url += "?session=" + session
+		}
 
-	files := http.FileServer(http.Dir(filesRoot))
-	http.Handle("/static/", http.StripPrefix("/static/", files))
+		http.Redirect(w, r, url, http.StatusSeeOther)
+	})
+	r.HandleFunc("/photos/{id}", photoHandler)
 
-	tmp := http.FileServer(http.Dir("./tmp"))
-	http.Handle("/tmp/", http.StripPrefix("/tmp/", tmp))
+	r.HandleFunc("/videos", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, fmt.Sprintf("/videos/%d", rand.Intn(len(videos))), http.StatusSeeOther)
+	})
+	r.HandleFunc("/videos/{id}", videoHandler)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(filesRoot))))
+
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
+	r.PathPrefix("/tmp/").Handler(http.StripPrefix("/tmp/", http.FileServer(http.Dir("./tmp"))))
+
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func files(path string) []file {
@@ -129,6 +173,7 @@ func files(path string) []file {
 			result = append(result, file{
 				path:     entryPath,
 				modified: info.ModTime(),
+				ext:      strings.ToUpper(filepath.Ext(entryPath)),
 			})
 		} else {
 			result = append(result, files(entryPath)...)

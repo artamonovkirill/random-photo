@@ -1,0 +1,35 @@
+<html lang="en">
+<head>
+    <title>Random Video</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<script>
+    document.addEventListener("keypress", function(event) {
+    if (event.code == 'KeyR') {
+        window.location.href = '{{.Refresh}}'
+    }
+    });
+    document.addEventListener("keydown", function(event) {
+        if (event.code == 'ArrowLeft') {
+            window.location.href = '{{.Previous}}'
+        } else if (event.code == 'ArrowRight') {
+            window.location.href = '{{.Next}}'
+        }
+    });
+</script>
+<div style="text-align: center;">
+    <div><b>{{.Modified}}</b>: {{.Origin}}</div>
+    <video class="media" controls="controls" autoplay>
+        <source src="{{.Path}}"/>
+    </video>
+    <div>
+        <a href="{{.Previous}}" class="button">&#8592;</a>
+        <a href="{{.Refresh}}" class="button">Refresh (R)</a>
+        <a href="{{.Next}}" class="button" style="margin-right: 30px">&#8594;</a>
+        <a href="/photos" class="button">Photos</a>
+    </div>
+</div>
+</body>
+</html>
