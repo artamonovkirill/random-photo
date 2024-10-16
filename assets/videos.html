@@ -19,12 +19,12 @@
         }
     });
 </script>
-<div style="text-align: center;">
+<div class="container" style="text-align: center;">
     <div><b>{{.Modified}}</b>: {{.Origin}}</div>
-    <video class="media" controls="controls" autoplay>
+    <video class="media" controls="controls" autoPlay>
         <source src="{{.Path}}"/>
     </video>
-    <div>
+    <div class="buttons">
         <a href="{{.Previous}}" class="button">&#8592;</a>
         <a href="{{.Refresh}}" class="button">Refresh (R)</a>
         <a href="{{.Next}}" class="button" style="margin-right: 30px">&#8594;</a>

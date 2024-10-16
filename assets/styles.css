@@ -1,11 +1,11 @@
 .media {
-    height: 90%;
-    width: 90%;
+    height: 85%;
+    width: 85%;
     object-fit: contain
 }
 
 .button {
-    background-color: #04AA6D; /* Green */
+    background-color: #04AA6D;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -14,13 +14,22 @@
     font-size: 20px;
 }
 
+.buttons {
+    margin-top: 10px;
+}
+
+.container {
+    text-align: center;
+    height: 100vh;
+}
+
 @media screen and (orientation:portrait) {
     .button {
         font-size: 35px;
     }
 
     .media {
-        height: 95%;
-        width: 95%;
+        height: 90%;
+        width: 90%;
     }
 }

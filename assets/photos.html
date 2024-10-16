@@ -19,16 +19,16 @@
         }
     });
 </script>
-<div style="text-align: center;">
+<div class="container">
     <div><b>{{.Modified}}</b>: {{.Origin}}</div>
     {{if or (eq .Ext ".MOV") (eq .Ext ".MP4")}}
-    <video class="media" controls="controls" autoplay>
+    <video class="media" controls="controls" autoPlay>
         <source src="{{.Path}}"/>
     </video>
     {{else}}
     <img class="media" src="{{.Path}}" alt="{{.Origin}}"/>
     {{end}}
-    <div>
+    <div class="buttons">
         <a href="{{.Previous}}" class="button">&#8592;</a>
         <a href="{{.Refresh}}" class="button">Refresh (R)</a>
         <a href="{{.Next}}" class="button" style="margin-right: 30px">&#8594;</a>
