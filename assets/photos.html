@@ -1,39 +1,39 @@
 <html lang="en">
 <head>
-    <title>Random Photo</title>
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-    <link rel="stylesheet" href="/assets/styles.css">
+  <title>Random Photo</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
 <script>
-    document.addEventListener("keypress", function(event) {
+  document.addEventListener("keypress", function (event) {
     if (event.code == 'KeyR') {
-        window.location.href = '{{.Refresh}}'
+      window.location.href = '{{.Refresh}}'
     }
-    });
-    document.addEventListener("keydown", function(event) {
-        if (event.code == 'ArrowLeft') {
-            window.location.href = '{{.Previous}}'
-        } else if (event.code == 'ArrowRight') {
-            window.location.href = '{{.Next}}'
-        }
-    });
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.code == 'ArrowLeft') {
+      window.location.href = '{{.Previous}}'
+    } else if (event.code == 'ArrowRight') {
+      window.location.href = '{{.Next}}'
+    }
+  });
 </script>
 <div class="container">
-    <div><b>{{.Modified}}</b>: {{.Origin}}</div>
-    {{if or (eq .Ext ".MOV") (eq .Ext ".MP4")}}
-    <video class="media" controls="controls" autoPlay>
-        <source src="{{.Path}}"/>
-    </video>
-    {{else}}
-    <img class="media" src="{{.Path}}" alt="{{.Origin}}"/>
-    {{end}}
-    <div class="buttons">
-        <a href="{{.Previous}}" class="button">&#8592;</a>
-        <a href="{{.Refresh}}" class="button">Refresh (R)</a>
-        <a href="{{.Next}}" class="button" style="margin-right: 30px">&#8594;</a>
-        <a href="/videos" class="button">Videos</a>
-    </div>
+  <div class="info"><b>{{.Modified}}</b>: {{.Origin}}</div>
+  {{if or (eq .Ext ".MOV") (eq .Ext ".MP4")}}
+  <video class="media" controls="controls" autoPlay>
+    <source src="{{.Path}}"/>
+  </video>
+  {{else}}
+  <img class="media" src="{{.Path}}" alt="{{.Origin}}"/>
+  {{end}}
+  <div class="buttons">
+    <a href="{{.Previous}}" class="button">&#8592;</a>
+    <a href="{{.Refresh}}" class="button">Refresh (R)</a>
+    <a href="{{.Next}}" class="button" style="margin-right: 30px">&#8594;</a>
+    <a href="/videos" class="button">Videos</a>
+  </div>
 </div>
 </body>
 </html>
