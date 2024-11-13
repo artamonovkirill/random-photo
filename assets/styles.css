@@ -38,6 +38,10 @@
         font-size: 35px;
     }
 
+    .container {
+        height: 90vh;
+    }
+
     .info {
         font-size: 35px;
     }
