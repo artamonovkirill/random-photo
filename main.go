@@ -71,10 +71,38 @@ func photoHandler(w http.ResponseWriter, r *http.Request) {
 		Next:     fmt.Sprintf("/photos/%d?session=%s", id+1, session),
 		Refresh:  fmt.Sprintf("/photos?session=%s", session),
 		Path:     path,
-		Origin:   origin,
+		Origin:   pretty(origin, file.modified),
 		Ext:      file.ext,
 		Modified: file.modified.Format(DATE),
 	})
+}
+
+var prefixeFormats = []string{
+	"2006 01 January",
+	"2006 01 Jan",
+	"2006 01",
+	"2006",
+}
+
+func pretty(origin string, modified time.Time) string {
+	var breadcrumbs []string
+
+	var prefixes []string
+	for _, f := range prefixeFormats {
+		prefixes = append(prefixes, modified.Format(f))
+	}
+
+	parts := strings.Split(origin, "/")
+	for _, b := range parts[1 : len(parts)-1] {
+		for _, p := range prefixes {
+			b = strings.TrimPrefix(b, p)
+		}
+		b = strings.TrimSpace(b)
+		if len(b) > 0 {
+			breadcrumbs = append(breadcrumbs, b)
+		}
+	}
+	return strings.Join(breadcrumbs, "/")
 }
 
 func videoHandler(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +123,7 @@ func videoHandler(w http.ResponseWriter, r *http.Request) {
 		Next:     fmt.Sprintf("/videos/%d", id+1),
 		Refresh:  "/videos",
 		Path:     path,
-		Origin:   origin,
+		Origin:   pretty(origin, file.modified),
 		Ext:      file.ext,
 		Modified: file.modified.Format(DATE),
 	})

@@ -20,7 +20,7 @@
   });
 </script>
 <div class="container">
-  <div class="info"><b>{{.Modified}}</b>: {{.Origin}}</div>
+  <div class="info"><b>{{.Modified}}</b> {{.Origin}}</div>
   {{if or (eq .Ext ".MOV") (eq .Ext ".MP4")}}
   <video class="media" controls="controls" autoPlay>
     <source src="{{.Path}}"/>
