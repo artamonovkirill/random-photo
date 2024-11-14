@@ -1,53 +1,63 @@
 .media {
-    height: 85%;
-    width: 85%;
-    object-fit: contain
+  height: 85%;
+  width: 85%;
+  object-fit: contain
 }
 
 .button {
-    background-color: #04AA6D;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-    border-radius: 5%;
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  border-radius: 5%;
 }
 
 .info {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .buttons {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: space-between;
-    align-items: center;
-    height: 95vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+  height: 95vh;
 }
 
-@media screen and (orientation:portrait) {
-    .button {
-        font-size: 35px;
-    }
+/* iPhone SE */
+@media (min-aspect-ratio: 0.6) and (orientation: portrait) {
+  .container {
+    height: 85vh;
+  }
+}
 
-    .container {
-        height: 90vh;
-    }
+/* Samsung Galaxy A50 */
+@media (max-aspect-ratio: 0.6) and (orientation: portrait) {
+  .container {
+    height: 90vh;
+  }
+}
 
-    .info {
-        font-size: 35px;
-    }
+@media (orientation: portrait) {
+  .button {
+    font-size: 35px;
+  }
 
-    .media {
-        height: 95%;
-        width: 95%;
-    }
+  .info {
+    font-size: 35px;
+  }
+
+  .media {
+    height: 95%;
+    width: 95%;
+  }
 }
