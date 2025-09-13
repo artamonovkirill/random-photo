@@ -7,6 +7,7 @@ Load a random photo (or video) from local photo library:
 ## Prerequisites
 
 - [go](https://go.dev/doc/install)
+   - go for linux-armv6l
 - see [go-libheif prerequisites](https://github.com/MaestroError/go-libheif?tab=readme-ov-file#prerequisites)
 
 ## Running
