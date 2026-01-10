@@ -1,6 +1,6 @@
 module github.com/artamonovkirill/random-photo
 
-go 1.25.1
+go 1.25.5
 
 require (
 	github.com/MaestroError/go-libheif v0.3.0
@@ -17,4 +17,4 @@ require (
 
 // check it's available for RaspberryPI before updating
 // pkg-config --modversion libheif
-require github.com/strukturag/libheif v1.17.6 // indirect
+require github.com/strukturag/libheif v1.19.8 // indirect
